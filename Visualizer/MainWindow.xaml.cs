@@ -86,7 +86,7 @@ namespace Visualizer
         private void ReadLog()
         {
             var logReader = new LogReader();
-            var allApps = logReader.Read(@"..\..\Data\log.txt");
+            var allApps = logReader.Read(@"..\..\Data\BackTrack.log");
 
             var date = allApps.Min(a => a.DateTime.Date);
             apps = allApps.Where(o => o.DateTime.Date == date).ToList();

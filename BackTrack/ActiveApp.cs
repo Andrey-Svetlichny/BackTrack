@@ -14,7 +14,7 @@ namespace BackTrack
 
         public string ToCsv()
         {
-            var idle = IsIdle ? "T" : "F";
+            var idle = IsIdle ? "Idle" : "";
             return $"{DateTime}; {idle}; {EncodeCsv(ProcessName)}; {EncodeCsv(WindowTitle)}";
         }
 
@@ -23,7 +23,7 @@ namespace BackTrack
             if (s == null)
                 return null;
 
-            char[] csvTokens = new[] { '\"', ',', '\n', '\r' };
+            char[] csvTokens = { '\"', ',', '\n', '\r' };
             if (s.IndexOfAny(csvTokens) >= 0)
             {
                 s = "\"" + s.Replace("\"", "\"\"") + "\"";

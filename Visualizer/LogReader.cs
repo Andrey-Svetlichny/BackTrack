@@ -70,13 +70,11 @@ namespace Visualizer
             var dateTimeStr = line.Substring(0, n1);
             var dateTime = DateTime.Parse(dateTimeStr);
             var n2 = line.IndexOf("; ", n1 + 2, StringComparison.InvariantCulture);
-            var processName = line.Substring(n1 + 2, n2 - n1 - 2);
-            var isIdle = processName == idle;
-            if (!isIdle)
-            {
-                processName = processName.Substring(14);
-            }
-            var windowTitle = isIdle ? null : line.Substring(n2 + 2 + 14);
+            var isIdleStr = line.Substring(n1 + 2, n2 - n1 - 2);
+            var isIdle = isIdleStr == idle;
+            var n3 = line.IndexOf("; ", n2 + 2, StringComparison.InvariantCulture);
+            var processName = line.Substring(n2 + 2, n3 - n2 - 2);
+            var windowTitle = line.Substring(n3 + 2);
 
             return new ParsedLine
             {
