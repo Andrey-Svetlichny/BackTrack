@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Visualizer", "Visualizer\Visualizer.csproj", "{7051F4FA-060D-4ABB-A371-5289E9CF24CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackTrack", "BackTrack\BackTrack.csproj", "{3ED720DF-DB65-40A3-B73F-F48A370A11C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7051F4FA-060D-4ABB-A371-5289E9CF24CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7051F4FA-060D-4ABB-A371-5289E9CF24CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7051F4FA-060D-4ABB-A371-5289E9CF24CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7051F4FA-060D-4ABB-A371-5289E9CF24CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3ED720DF-DB65-40A3-B73F-F48A370A11C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ED720DF-DB65-40A3-B73F-F48A370A11C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ED720DF-DB65-40A3-B73F-F48A370A11C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ED720DF-DB65-40A3-B73F-F48A370A11C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
