@@ -58,6 +58,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DateTimeToIntConverter.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="Model\Tag.cs" />
+    <Compile Include="Model\TagStrip.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="TimeChart.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

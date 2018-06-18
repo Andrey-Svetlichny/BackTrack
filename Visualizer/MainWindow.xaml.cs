@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Visualizer.Annotations;
 using Visualizer.model;
+using Visualizer.Model;
 
 namespace Visualizer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         static Image image;
         List<ActiveApp> apps;
@@ -21,6 +25,7 @@ namespace Visualizer
 
         public MainWindow()
         {
+            TagStrip = new TagStrip();
             InitializeComponent();
 
             ReadLog();
@@ -28,26 +33,31 @@ namespace Visualizer
             image = this.Image;
             textBlock = this.TextBlock;
 
-
             Loaded += delegate
             {
                 var margin = Border.Margin.Left + Border.Margin.Right + Border.BorderThickness.Left + Border.BorderThickness.Right;
                 timeChart = new TimeChart((int)(this.Grid.ActualWidth - margin), (int)50);
                 this.Image.Source = timeChart.Bitmap;
 
-
                 FillAppIndex(apps, timeChart.Width);
                 DrawChart(apps);
 
-
-                image.MouseMove += new MouseEventHandler(i_MouseMove);
-
+                image.MouseMove += Image_MouseMove;
+                image.MouseDown += Image_MouseDown;
             };
+        }
 
+        private int selectionStart, selectionEnd;
+        private void Image_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DrawSelection(clear:true);
+            int x = (int)e.GetPosition(image).X;
+            selectionStart = x;
         }
 
         // приложения, соответствующие каждой точке графика по горизонтали
         int[] _appIndex;
+        private List<ActiveApp> _selectedApps;
 
         private void FillAppIndex(List<ActiveApp> apps, int width)
         {
@@ -93,27 +103,66 @@ namespace Visualizer
         }
 
 
-        private static int oldX = -1;
-        void i_MouseMove(object sender, MouseEventArgs e)
+        public TagStrip TagStrip { get; set; }
+
+        void Image_MouseMove(object sender, MouseEventArgs e)
         {
-
             int x = (int)e.GetPosition(image).X;
-            int y = (int)e.GetPosition(image).Y;
-
             if (x >= timeChart.Width)
             {
                 return;
             }
 
-            if (oldX != -1)
+            DrawPointer(x);
+
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                var oldAppId = _appIndex[oldX];
+                selectionEnd = x;
+                DrawSelection();
+                ShowSelectionApps();
+            }
+        }
+
+        public List<ActiveApp> SelectedApps
+        {
+            get { return _selectedApps; }
+            set
+            {
+                if (Equals(value, _selectedApps)) return;
+                _selectedApps = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void ShowSelectionApps()
+        {
+            var x1 = selectionStart < selectionEnd ? selectionStart : selectionEnd;
+            var x2 = selectionStart < selectionEnd ? selectionEnd : selectionStart;
+            var appId1 = _appIndex[x1];
+            var appId2 = _appIndex[x2];
+            SelectedApps = apps.Skip(appId1).Take(appId2 - appId1 + 1).ToList();
+        }
+
+        private void DrawSelection(bool clear = false)
+        {
+            var x1 = selectionStart < selectionEnd ? selectionStart : selectionEnd;
+            var x2 = selectionStart < selectionEnd ? selectionEnd : selectionStart;
+            var color = clear ? Constants.GetColor(0) : Constants.GetColor(1);
+            timeChart.DrawLineHorizontal(x1, x2, timeChart.Height - 1, color);
+        }
+
+        private static int _pointerX = -1;
+        private void DrawPointer(int x)
+        {
+            if (_pointerX != -1)
+            {
+                var oldAppId = _appIndex[_pointerX];
                 var oldApp = apps[oldAppId];
-                timeChart.DrawLine(oldX, 0, timeChart.Height-10, oldApp.Process.Color);
+                timeChart.DrawLineVertical(_pointerX, 0, timeChart.Height - 10, oldApp.Process.Color);
             }
 
-            oldX = x;
-            timeChart.DrawLine(x, 0, timeChart.Height-10, Constants.GetColor(1));
+            _pointerX = x;
+            timeChart.DrawLineVertical(x, 0, timeChart.Height - 10, Constants.GetColor(1));
 
             var appId = _appIndex[x];
             var app = apps[appId];
@@ -125,24 +174,29 @@ namespace Visualizer
                 end = nextApp.DateTime;
             }
             textBlock.Text = $"x={x}, dateTime={begin} - {end} {app}";
-
-
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                timeChart.DrawPixel(x, y);
-
-            }
-
-
-/*
-            else if (e.RightButton == MouseButtonState.Pressed)
-            {
-                ErasePixel(e);
-            }
-*/
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
+        private void EnterTag_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key != System.Windows.Input.Key.Enter) return;
+
+            var x1 = selectionStart < selectionEnd ? selectionStart : selectionEnd;
+            var x2 = selectionStart < selectionEnd ? selectionEnd : selectionStart;
+            var appId1 = _appIndex[x1];
+            var appId2 = _appIndex[x2];
+            if (appId2 < apps.Count)
+            {
+                appId2++;
+            }
+            TagStrip.Set(apps[appId1].DateTime, apps[appId2].DateTime, TextBoxTag.Text);
+        }
     }
 }

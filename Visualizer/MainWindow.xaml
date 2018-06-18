@@ -4,12 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Visualizer"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="150" Width="650">
+        Title="MainWindow" Height="600" Width="800">
     <Grid Name="Grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="80" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Border Name="Border" BorderBrush="Gray" BorderThickness="1" 
                 HorizontalAlignment="Left" VerticalAlignment="Top"
@@ -17,6 +21,15 @@
             <Image Name="Image" Stretch="None" HorizontalAlignment="Left">
             </Image>
         </Border>
-        <TextBlock Grid.Row="1" Name="TextBlock"></TextBlock>
+        <TextBox Grid.Row="1" Name="TextBoxTag" KeyUp="EnterTag_OnKeyUp"></TextBox>
+        <TextBlock Grid.Row="2" Name="TextBlock"></TextBlock>
+        <DataGrid Grid.Row="3" ItemsSource="{Binding SelectedApps}"></DataGrid>
+        <DataGrid Grid.Row="4" ItemsSource="{Binding TagStrip.Tags}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Begin}" />
+                <DataGridTextColumn Header="Name" Binding="{Binding End}" />
+                <DataGridTextColumn Header="Name" Binding="{Binding TagText.Text}" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>

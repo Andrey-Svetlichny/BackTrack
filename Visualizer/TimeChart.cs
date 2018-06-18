@@ -53,7 +53,7 @@ namespace Visualizer
             Bitmap.Unlock();
         }
 
-        public void DrawLine(int x, int y1, int y2, int color)
+        public void DrawLineVertical(int x, int y1, int y2, int color)
         {
             Bitmap.Lock();
             unsafe
@@ -69,6 +69,25 @@ namespace Visualizer
                 }
             }
             Bitmap.AddDirtyRect(new Int32Rect(x, y1, 1, y2 - y1));
+            Bitmap.Unlock();
+        }
+
+        public void DrawLineHorizontal(int x1, int x2, int y, int color)
+        {
+            Bitmap.Lock();
+            unsafe
+            {
+                // Get a pointer to the back buffer.
+                int pBackBuffer = (int)Bitmap.BackBuffer;
+
+                for (int x = x1; x < x2; x++)
+                {
+                    // pixel address
+                    int p = pBackBuffer + y * Bitmap.BackBufferStride + x * 4;
+                    *((int*)p) = color;
+                }
+            }
+            Bitmap.AddDirtyRect(new Int32Rect(x1, y, x2-x1, 1));
             Bitmap.Unlock();
         }
 
